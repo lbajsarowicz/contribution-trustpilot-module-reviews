@@ -39,14 +39,11 @@ class HttpClient extends AbstractHelper
         }
     }
     
-    private  function jsonEncoder($data)
-	{
-		if (function_exists('json_encode'))
-			return json_encode($data);
-		elseif (method_exists('Tools', 'jsonEncode'))
-			return Tools::jsonEncode($data);
+    private function jsonEncoder($data)
+    {
+        return json_encode($data);
     }
-    
+
     private function setCurlOptions($ch, $httpRequest, $data, $origin, $timeout)
     { 
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);

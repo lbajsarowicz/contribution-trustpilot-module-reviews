@@ -65,7 +65,9 @@ class TrustpilotHttpClient extends AbstractHelper
 
     public function postSettings($key, $data)
     {
-        $origin = $this->_storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_WEB);
+        $store = $this->_storeManager->getStore();
+        $storeId = $store->getId();
+        $origin = $store->getBaseUrl(UrlInterface::URL_TYPE_WEB);
         return $this->post($this->buildUrl($key, '/settings'), $origin, $data, $storeId);
     }
 

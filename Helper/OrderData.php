@@ -3,6 +3,7 @@
 namespace Trustpilot\Reviews\Helper;
 
 use Magento\Catalog\Model\Product;
+use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use \Magento\Store\Model\StoreManagerInterface;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
@@ -16,19 +17,22 @@ class OrderData extends AbstractHelper
     protected $_categoryCollectionFactory;
     protected $_productFactory;
     protected $_trustpilotLog;
+    protected $_customerRepository;
 
     public function __construct(
         StoreManagerInterface $storeManager,
         Data $helper,
         CategoryCollectionFactory $categoryCollectionFactory,
         TrustpilotLog $trustpilotLog,
-        ProductFactory $_productFactory)
+        ProductFactory $_productFactory,
+        CustomerRepositoryInterface $customerRepository)
     {
         $this->_storeManager = $storeManager;
         $this->_helper = $helper;
         $this->_categoryCollectionFactory = $categoryCollectionFactory;
         $this->_trustpilotLog = $trustpilotLog;
         $this->_productFactory = $_productFactory;
+        $this->_customerRepository = $customerRepository;
     }
 
     public function getInvitation($order, $hook, $collect_product_data = \Trustpilot\Reviews\Model\Config::WITH_PRODUCT_DATA)
@@ -125,8 +129,8 @@ class OrderData extends AbstractHelper
         }
 
         try {
-            if (!($this->is_empty($order->getCustomerId())) && !($this->is_empty($order->getCustomerId())))
-                return $this->_customer->load($order->getCustomerId())->getEmail();
+            if (!($this->is_empty($order->getCustomerId())))
+                return $this->_customerRepository->getById($order->getCustomerId())->getEmail();
         } catch (\Throwable $e) {
             $description = 'Unable to get customer email from customer data';
             $this->_trustpilotLog->error($e, $description);
