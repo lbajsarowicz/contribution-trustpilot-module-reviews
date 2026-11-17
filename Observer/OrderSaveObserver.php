@@ -2,6 +2,7 @@
 namespace Trustpilot\Reviews\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Event\Observer as EventObserver;
 use Trustpilot\Reviews\Helper\OrderData;
 use Trustpilot\Reviews\Helper\Data;
@@ -67,7 +68,7 @@ class OrderSaveObserver implements ObserverInterface
             $vars = array(
                 'storeId' => isset($storeId) ? $storeId : null,
                 'orderStatus' => isset($orderStatus) ? $orderStatus : null,
-                'key' => isset($key) ? $key : null,
+                'key' => $key,
             );
             $this->_trustpilotLog->error($e, $description, $vars);
         } catch (\Exception $e) {
@@ -75,7 +76,7 @@ class OrderSaveObserver implements ObserverInterface
             $vars = array(
                 'storeId' => isset($storeId) ? $storeId : null,
                 'orderStatus' => isset($orderStatus) ? $orderStatus : null,
-                'key' => isset($key) ? $key : null,
+                'key' => $key,
             );
             $this->_trustpilotLog->error($e, $description, $vars);
         }

@@ -6,6 +6,7 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Helper\Context;
+use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use \Magento\Store\Model\ResourceModel\Website\CollectionFactory as WebsiteCollectionFactory;
@@ -39,6 +40,7 @@ class Data extends AbstractHelper
     protected $_linkManagement;
     protected $_trustpilotLog;
     protected $_url;
+    protected $_productMetadata;
 
     public function __construct(
         Context $context,
@@ -54,7 +56,8 @@ class Data extends AbstractHelper
         Registry $registry,
         LinkManagementInterface $linkManagement,
         TrustpilotLog $trustpilotLog,
-        Url $url
+        Url $url,
+        ProductMetadataInterface $productMetadata
     ) {
         $this->_storeManager = $storeManager;
         $this->_categoryCollectionFactory   = $categoryCollectionFactory;
@@ -72,6 +75,7 @@ class Data extends AbstractHelper
         $this->_linkManagement = $linkManagement;
         $this->_trustpilotLog = $trustpilotLog;
         $this->_url = $url;
+        $this->_productMetadata = $productMetadata;
     }
 
     public function getIntegrationAppUrl()
@@ -201,13 +205,7 @@ class Data extends AbstractHelper
     }
 
     public function getVersion() {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $productMetadata = $objectManager->get('Magento\Framework\App\ProductMetadataInterface');
-        if (method_exists($productMetadata, 'getVersion')) {
-            return $productMetadata->getVersion();
-        } else {
-            return \Magento\Framework\AppInterface::VERSION;
-        }
+        return $this->_productMetadata->getVersion();
     }
 
     public function getPageUrls($scope, $storeId)
